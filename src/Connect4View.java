@@ -7,10 +7,16 @@ import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
+import javafx.scene.control.ButtonType;
+import javafx.scene.control.Dialog;
+import javafx.scene.control.DialogPane;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
+import javafx.scene.control.RadioButton;
+import javafx.scene.control.TextInputDialog;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
@@ -18,13 +24,26 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 
 public class Connect4View extends Application implements Observer{
 
 	private class Connect4DialogBox extends Stage {
 		public Connect4DialogBox() {
-			HBox hBox = new HBox();
-			setScene(new Scene(hBox, 344, 321));
+			DialogPane dPane = new DialogPane();
+			Alert dialog = new Alert(AlertType.NONE);
+			dialog.initModality(Modality.APPLICATION_MODAL);
+			dialog.initStyle(StageStyle.UTILITY);
+			dialog.setTitle("Network Setup");
+			RadioButton rb = new RadioButton();
+			rb.setText("Test");
+			dPane.getChildren().add(rb);
+			//dialog.getDialogPane().getChildren().add(rb);
+			dialog.setDialogPane(dPane);
+			ButtonType ok = new ButtonType("Ok");
+			ButtonType cancel = new ButtonType("Cancel");
+			dialog.getButtonTypes().addAll(ok, cancel);
+			dialog.showAndWait();
 		}
 	}
 	
@@ -48,12 +67,6 @@ public class Connect4View extends Application implements Observer{
 		MenuItem newGame = new MenuItem("New Game");
 		newGame.setOnAction((event) -> {
 			Connect4DialogBox dialogBox = new Connect4DialogBox();
-			dialogBox.initModality(Modality.APPLICATION_MODAL);
-			dialogBox.show();
-			dialogBox.addEventFilter(eventType, eventFilter);
-			//this.controller.createNewGame();
-			//fillGrid(controller.getGrid());
-			//stage.show();
 		});
 		file.getItems().add(newGame);
 		bar.getMenus().add(file);
