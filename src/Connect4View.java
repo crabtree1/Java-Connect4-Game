@@ -12,13 +12,22 @@ import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 
 public class Connect4View extends Application implements Observer{
 
+	private class Connect4DialogBox extends Stage {
+		public Connect4DialogBox() {
+			HBox hBox = new HBox();
+			setScene(new Scene(hBox, 344, 321));
+		}
+	}
+	
 	GridPane window;
 	int currPlayer = 1;
 	Connect4Model model = new Connect4Model();
@@ -26,7 +35,6 @@ public class Connect4View extends Application implements Observer{
 	VBox border;
 	MenuBar bar;
 
-	
 	@Override
 	public void start(Stage stage) {
 		model.addObserver(this);
@@ -38,6 +46,15 @@ public class Connect4View extends Application implements Observer{
 		bar = new MenuBar();
 		Menu file = new Menu("File");
 		MenuItem newGame = new MenuItem("New Game");
+		newGame.setOnAction((event) -> {
+			Connect4DialogBox dialogBox = new Connect4DialogBox();
+			dialogBox.initModality(Modality.APPLICATION_MODAL);
+			dialogBox.show();
+			dialogBox.addEventFilter(eventType, eventFilter);
+			//this.controller.createNewGame();
+			//fillGrid(controller.getGrid());
+			//stage.show();
+		});
 		file.getItems().add(newGame);
 		bar.getMenus().add(file);
 		

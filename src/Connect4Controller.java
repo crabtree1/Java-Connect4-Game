@@ -2,7 +2,7 @@ import java.util.ArrayList;
 
 public class Connect4Controller {
 
-	Connect4Model model;
+	private Connect4Model model;
 	
 	public Connect4Controller(Connect4Model model) {
 		this.model = model;
@@ -22,5 +22,11 @@ public class Connect4Controller {
 	
 	public int hasWon() {
 		return model.hasWon();
+	}
+	
+	public void createNewGame() {
+		Connect4Model newModel = new Connect4Model();
+		
+		this.model = newModel;
 	}
 }
