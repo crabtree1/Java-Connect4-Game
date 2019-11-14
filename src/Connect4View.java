@@ -144,9 +144,6 @@ public class Connect4View extends Application implements Observer{
 			illegalMove.showAndWait();
 		}
 	}
-	
-	
-	
 
 	@Override
 	public void update(Observable o, Object arg) {
