@@ -1,6 +1,7 @@
 import java.util.ArrayList;
+import java.util.Observable;
 
-public class Connect4Model {
+public class Connect4Model extends Observable {
 	private ArrayList<ArrayList<Integer>> grid;
 	
 	public Connect4Model() {
@@ -15,6 +16,10 @@ public class Connect4Model {
 		
 	}
 	
+	public ArrayList<ArrayList<Integer>> getGrid() {
+		return grid;
+	}
+	
 	public void addPiece(int place, int player) {
 		for(int i=5; i>=0; i--) {
 			if(grid.get(i).get(place) == 0) {
@@ -22,6 +27,15 @@ public class Connect4Model {
 				break;
 			}
 		}
+		setChanged();
+		notifyObservers(grid);
+	}
+	
+	public boolean isLegal(int col) {
+		if (grid.get(0).get(col) == 0) {
+			return true;
+		}
+		return false;
 	}
 	
 	public boolean isComplete() {
