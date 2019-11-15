@@ -1,3 +1,4 @@
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Observable;
 
@@ -24,6 +25,15 @@ public class Connect4Model extends Observable {
 		for(int i=5; i>=0; i--) {
 			if(grid.get(i).get(place) == 0) {
 				grid.get(i).set(place, player);
+				
+				Connect4MoveMessage message = new Connect4MoveMessage(i, place, player);
+				try {
+					Connect4Client.callServer(message);
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				
 				break;
 			}
 		}

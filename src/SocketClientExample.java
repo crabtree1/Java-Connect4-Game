@@ -13,16 +13,16 @@ public class SocketClientExample {
 		Socket socket;
 		ObjectOutputStream oos;
 		ObjectInputStream ois;
-		socket = new Socket(host.getHostName(), 4000);
 		String message = "";
+		Scanner scanner = new Scanner(System.in);
 		while(!message.equalsIgnoreCase("exit")) {
-			//Scanner scanner = new Scanner(System.in);
+			socket = new Socket(host.getHostName(), 4000);
 			System.out.println("Input Here:");
-			//message = scanner.nextLine();
+			message = scanner.nextLine();
 			oos = new ObjectOutputStream(socket.getOutputStream());
 			oos.writeObject(message);
-			//scanner.close();
+			socket.close();
 		}
-		socket.close();
+		scanner.close();
 	}
 }

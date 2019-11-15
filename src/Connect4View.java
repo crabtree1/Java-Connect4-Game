@@ -1,8 +1,10 @@
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Observable;
 import java.util.Observer;
 
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
@@ -56,6 +58,7 @@ public class Connect4View extends Application implements Observer{
 
 	@Override
 	public void start(Stage stage) {
+		
 		model.addObserver(this);
 		stage.setTitle("Connect 4");
 		
@@ -67,6 +70,7 @@ public class Connect4View extends Application implements Observer{
 		MenuItem newGame = new MenuItem("New Game");
 		newGame.setOnAction((event) -> {
 			Connect4DialogBox dialogBox = new Connect4DialogBox();
+			this.newGame();
 		});
 		file.getItems().add(newGame);
 		bar.getMenus().add(file);
@@ -98,7 +102,6 @@ public class Connect4View extends Application implements Observer{
 		
 		border.getChildren().clear();
 		border.getChildren().addAll(bar, window);
-		
 	}
 	
 	public Color getPlayerColor(int player) {
@@ -173,6 +176,13 @@ public class Connect4View extends Application implements Observer{
 			illegalMove.setContentText("Column full, pick somewhere else!");
 			illegalMove.showAndWait();
 		}
+	}
+	
+	private void newGame() {
+		Connect4Model newModel = new Connect4Model();
+		this.controller.setModel(newModel);
+		newModel.addObserver(this);
+		update(model, controller.getGrid());
 	}
 
 	@Override

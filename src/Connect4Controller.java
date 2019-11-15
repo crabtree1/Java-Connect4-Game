@@ -24,9 +24,7 @@ public class Connect4Controller {
 		return model.hasWon();
 	}
 	
-	public void createNewGame() {
-		Connect4Model newModel = new Connect4Model();
-		
-		this.model = newModel;
+	public void setModel(Connect4Model newModel) {
+		model = newModel;
 	}
 }

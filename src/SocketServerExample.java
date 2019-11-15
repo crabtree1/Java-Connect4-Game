@@ -10,17 +10,14 @@ public class SocketServerExample {
 	
 	public static void main(String[] args) throws IOException, ClassNotFoundException {
 		server = new ServerSocket(port);
-		Socket socket = server.accept();
-		ObjectInputStream ois = new ObjectInputStream(socket.getInputStream());
-		String message = (String) ois.readObject();
-		System.out.println(message);
+		String message = "";
 		while(!message.equalsIgnoreCase("exit")) {
-			socket = server.accept();
-			ois = new ObjectInputStream(socket.getInputStream());
+			Socket socket = server.accept();
+			ObjectInputStream ois = new ObjectInputStream(socket.getInputStream());
 			message = (String) ois.readObject();
 			System.out.println(message);
+			ois.close();
+			socket.close();
 		}
-		ois.close();
-		socket.close();
 	}
 }
