@@ -49,6 +49,7 @@ public class Connect4View extends Application implements Observer{
 		}
 	}
 	
+	boolean isClient = true;
 	GridPane window;
 	int currPlayer = 1;
 	Connect4Model model = new Connect4Model();
@@ -58,6 +59,27 @@ public class Connect4View extends Application implements Observer{
 
 	@Override
 	public void start(Stage stage) {
+		
+		Thread serverThread = new Thread(new Runnable() {
+			@Override
+			public void run() {
+				Platform.runLater(new Runnable() {
+					@Override
+					public void run() {
+						isClient = false;
+						//while(true) {
+						Connect4MoveMessage message;
+						try {
+							 message = Connect4Server.startServer(controller);
+							 controller.addPiece(message.getColumn(), message.getColor());
+						} catch (ClassNotFoundException | IOException e) {
+							e.printStackTrace();
+						}
+					//}
+					}
+				});
+			}
+		});
 		
 		model.addObserver(this);
 		stage.setTitle("Connect 4");
@@ -71,6 +93,8 @@ public class Connect4View extends Application implements Observer{
 		newGame.setOnAction((event) -> {
 			Connect4DialogBox dialogBox = new Connect4DialogBox();
 			this.newGame();
+			serverThread.setDaemon(true);
+			serverThread.start();
 		});
 		file.getItems().add(newGame);
 		bar.getMenus().add(file);
@@ -151,6 +175,10 @@ public class Connect4View extends Application implements Observer{
 		
 		if (controller.isLegal(col)) {
 			controller.addPiece(col, currPlayer);
+			
+			if(isClient == true) {
+				
+			}
 			
 			//check if game won
 			int winner = controller.hasWon();
