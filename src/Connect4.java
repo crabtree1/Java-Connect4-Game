@@ -12,19 +12,4 @@ public class Connect4  {
 		Application.launch(Connect4View.class, args);
 	}
 	
-	
-/**
- * 				Platform.runLater(new Runnable() {
-					@Override
-					public void run() {
-						try {
-							Connect4Server.startServer(new Connect4Controller(new Connect4Model()));
-						} catch (ClassNotFoundException | IOException e) {
-							e.printStackTrace();
-						}
-					}
-					
-				});
- */
-	
 }

@@ -27,11 +27,13 @@ public class Connect4Model extends Observable {
 				grid.get(i).set(place, player);
 				
 				Connect4MoveMessage message = new Connect4MoveMessage(i, place, player);
+				if(Connect4View.isClient) {
 				try {
 					Connect4Client.callServer(message);
 				} catch (IOException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
+				}
 				}
 				
 				break;

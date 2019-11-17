@@ -15,14 +15,16 @@ public class SocketClientExample {
 		ObjectInputStream ois;
 		String message = "";
 		Scanner scanner = new Scanner(System.in);
+		socket = new Socket(host.getHostName(), 4000);
 		while(!message.equalsIgnoreCase("exit")) {
-			socket = new Socket(host.getHostName(), 4000);
+			//socket = new Socket(host.getHostName(), 4000);
 			System.out.println("Input Here:");
 			message = scanner.nextLine();
 			oos = new ObjectOutputStream(socket.getOutputStream());
 			oos.writeObject(message);
-			socket.close();
+			//socket.close();
 		}
+		socket.close();
 		scanner.close();
 	}
 }
