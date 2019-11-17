@@ -16,7 +16,9 @@ import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.RadioButton;
+import javafx.scene.control.TextField;
 import javafx.scene.control.TextInputDialog;
+import javafx.scene.control.ToggleGroup;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
@@ -24,30 +26,12 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
+import javafx.scene.text.Text;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 
 public class Connect4View extends Application implements Observer{
-
-	private class Connect4DialogBox extends Stage {
-		public Connect4DialogBox() {
-			DialogPane dPane = new DialogPane();
-			Alert dialog = new Alert(AlertType.NONE);
-			dialog.initModality(Modality.APPLICATION_MODAL);
-			dialog.initStyle(StageStyle.UTILITY);
-			dialog.setTitle("Network Setup");
-			RadioButton rb = new RadioButton();
-			rb.setText("Test");
-			dPane.getChildren().add(rb);
-			//dialog.getDialogPane().getChildren().add(rb);
-			dialog.setDialogPane(dPane);
-			ButtonType ok = new ButtonType("Ok");
-			ButtonType cancel = new ButtonType("Cancel");
-			dialog.getButtonTypes().addAll(ok, cancel);
-			dialog.showAndWait();
-		}
-	}
 	
 	static boolean isClient = true;
 	GridPane window;
@@ -56,6 +40,77 @@ public class Connect4View extends Application implements Observer{
 	Connect4Controller controller = new Connect4Controller(model);
 	VBox border;
 	MenuBar bar;
+
+	private class Connect4DialogBox extends Stage {
+		public Connect4DialogBox() {
+			DialogPane dPane = new DialogPane();
+			
+			dPane.setMinHeight(130);
+			dPane.setMinWidth(260);
+			
+			Alert dialog = new Alert(AlertType.NONE);
+			dialog.initModality(Modality.APPLICATION_MODAL);
+			dialog.initStyle(StageStyle.UTILITY);
+			dialog.setTitle("Network Setup");
+			
+			ToggleGroup createGroup = new ToggleGroup();
+			
+			RadioButton serverRadio = new RadioButton("Server");
+			serverRadio.setSelected(true);
+			serverRadio.setMinWidth(70);
+			serverRadio.setToggleGroup(createGroup);
+			
+			RadioButton clientRadio = new RadioButton("Client");
+			clientRadio.setMinWidth(70);
+			clientRadio.setToggleGroup(createGroup);
+			
+			ToggleGroup playAsGroup = new ToggleGroup();
+			
+			RadioButton humanRadio = new RadioButton("Human");
+			humanRadio.setSelected(true);
+			humanRadio.setMinWidth(70);
+			humanRadio.setToggleGroup(playAsGroup);
+			
+			RadioButton computerRadio = new RadioButton("Computer");
+			computerRadio.setMinWidth(80);
+			computerRadio.setToggleGroup(playAsGroup);
+			
+			Text createText = new Text("   Create: ");
+			Text playAsText = new Text("   Play as: ");
+			Text serverText = new Text("   Server");
+			Text portText = new Text("Port");
+			
+			TextField serverField = new TextField("localhost");
+			serverField.setMinWidth(90);
+			
+			TextField portField = new TextField("4000");
+			portField.setMinWidth(90);
+			
+			HBox createBox = new HBox(10);
+			
+			createBox.getChildren().addAll(createText, serverRadio, clientRadio);
+			
+			HBox playAsBox = new HBox(10);
+			playAsBox.getChildren().addAll(playAsText, humanRadio, computerRadio);
+			
+			HBox serverPortBox = new HBox(10);
+			serverPortBox.getChildren().addAll(serverText, serverField, portText, portField);
+			
+			VBox holder = new VBox(10);
+			holder.getChildren().addAll(createBox, playAsBox, serverPortBox);
+			
+			
+			dPane.getChildren().addAll(holder);
+			dialog.setDialogPane(dPane);
+			
+			ButtonType ok = new ButtonType("OK");
+			ButtonType cancel = new ButtonType("Cancel");
+			dialog.getButtonTypes().addAll(ok, cancel);
+			
+			dialog.showAndWait();
+		}
+	}
+
 
 	@Override
 	public void start(Stage stage) {
