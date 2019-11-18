@@ -298,14 +298,6 @@ public class Connect4View extends Application implements Observer{
 		//isTurn = true;
 		//System.out.println(controller.getTurn());
 		System.out.print(Connect4Client.isListening());
-		if(controller.getClientStat() && !Connect4Client.isListening()) {
-			//System.out.print("Here");
-			try {
-				Connect4Client.getMessage(controller);
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-		}
 	}
 
 	
