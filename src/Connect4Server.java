@@ -61,9 +61,6 @@ public class Connect4Server {
 					ObjectInputStream ois = new ObjectInputStream(socket.getInputStream());
 					otherMessage = (Connect4MoveMessage) ois.readObject();
 					System.out.println("Server Data Recived...");
-					System.out.println("Row: " + otherMessage.getRow());
-					System.out.println("Col: " + otherMessage.getColumn());
-					System.out.println("Color: " + otherMessage.getColor());
 					ois.close();
 					Platform.runLater(new Runnable() {
 						@Override
@@ -71,12 +68,12 @@ public class Connect4Server {
 							model.addPiece(otherMessage.getColumn(), otherMessage.getColor());
 						}
 					});
-					System.out.print("Here");
 					socket.close();
 				} catch (IOException | ClassNotFoundException e) {
 					e.printStackTrace();
 				}
 			}
+			
 		});
 		serverThread.start();
 	}

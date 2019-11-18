@@ -30,7 +30,7 @@ public class Connect4View extends Application implements Observer{
 	
 	boolean isClient = true;
 	boolean isTurn = false;
-	boolean isServerClient = false;
+	boolean isHuman = true;
 	GridPane window;
 	int currPlayer = 1;
 	Connect4Model model = new Connect4Model();
@@ -40,8 +40,9 @@ public class Connect4View extends Application implements Observer{
 	Connect4DialogBox dialogBox;
 
 	private class Connect4DialogBox extends Stage {
-		ToggleGroup createGroup;
-		TextField portField;
+		private ToggleGroup createGroup;
+		private TextField portField;
+		private ToggleGroup playAsGroup;
 		
 		public Connect4DialogBox() {
 			DialogPane dPane = new DialogPane();
@@ -114,6 +115,20 @@ public class Connect4View extends Application implements Observer{
 		
 		public int getPort() {
 			return  Integer.parseInt(portField.getText());
+		}
+		
+		public boolean playAs() {
+			if(this.playAsGroup.getSelectedToggle().toString().contains("human")) {
+				return true;
+			}
+			return false;
+		}
+		
+		public boolean createType() {
+			if(this.createGroup.getSelectedToggle().toString().contains("Server")) {
+				return false;
+			}
+			return true;
 		}
 	}
 
@@ -209,16 +224,17 @@ public class Connect4View extends Application implements Observer{
 		else {
 			col = 6;
 		}
-		
-		if (controller.isLegal(col)) {
-			controller.addPiece(col, currPlayer, isClient, isServerClient);
+		if (!isHuman) {
+			window.setOnMouseClicked((event) -> {});
+		} else if(!isTurn) {
+			window.setOnMouseClicked((event) -> {});
+		} else if (controller.isLegal(col) && isTurn) {
+			controller.addPiece(col, currPlayer, isClient);
+			isTurn = false;
 			
 			//check if game won
 			int winner = controller.hasWon();
 			if (winner != 0) {
-				if (!isTurn) {
-					window.setOnMouseClicked((event) -> {});
-				}
 				window.setOnMouseClicked((event) -> {});
 				Alert winAlert = new Alert(AlertType.INFORMATION);
 				winAlert.setHeaderText("Message");
@@ -235,15 +251,14 @@ public class Connect4View extends Application implements Observer{
 	}
 	
 	private void newGame() {
-		Connect4Model newModel = new Connect4Model();
-		this.controller.setModel(newModel);
-		newModel.addObserver(this);
+		Connect4Model model = new Connect4Model();
+		this.controller.setModel(model);
+		model.addObserver(this);
 		this.fillGrid(model.getGrid());
-		update(model, controller.getGrid());
+		//update(model, controller.getGrid());
 		Connect4Server.setPort(this.dialogBox.getPort());
 		Connect4Client.setPort(this.dialogBox.getPort());
-		isServerClient = true;
-		if(this.dialogBox.createGroup.getSelectedToggle().toString().contains("Server")) {
+		if(!this.dialogBox.createType()) {
 			isClient = false;
 			isTurn = true;
 			currPlayer = 1;
@@ -253,15 +268,23 @@ public class Connect4View extends Application implements Observer{
 				e.printStackTrace();
 			}
 		} else {
+			try {
+				Connect4Client.getMessage(controller);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
 			isClient = true;
 			currPlayer = 2;
 		}
+		model.setPlayer(currPlayer);
 	}
 
 	@Override
 	public void update(Observable o, Object arg) {
 		ArrayList<ArrayList<Integer>> grid = (ArrayList<ArrayList<Integer>>) arg;
 		fillGrid(grid);
+		isTurn = true;
+		System.out.println(isTurn);
 	}
 
 	

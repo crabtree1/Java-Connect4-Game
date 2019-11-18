@@ -4,6 +4,7 @@ import java.util.Observable;
 
 public class Connect4Model extends Observable {
 	private ArrayList<ArrayList<Integer>> grid;
+	private int player;
 	
 	public Connect4Model() {
 		grid = new ArrayList<ArrayList<Integer>>();
@@ -15,6 +16,10 @@ public class Connect4Model extends Observable {
 			grid.add(temp);
 		}
 		
+	}
+	
+	public void setPlayer(int player) {
+		this.player = player;
 	}
 	
 	public ArrayList<ArrayList<Integer>> getGrid() {

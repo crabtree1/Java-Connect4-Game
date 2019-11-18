@@ -1,4 +1,5 @@
 import java.util.ArrayList;
+import java.util.Random;
 
 public class Connect4Controller {
 
@@ -8,11 +9,18 @@ public class Connect4Controller {
 		this.model = model;
 	}
 	
-	public void addPiece(int place, int player, boolean isClient, boolean isClientServer) {
-		if(isClientServer) {
-			model.addPiece(place, player, isClient);
-		}
+	public void addPiece(int place, int player, boolean isClient) {
+		model.addPiece(place, player, isClient);
 		model.addPiece(place, player);
+	}
+	
+	public void computerTurn() {
+		Random rand = new Random();
+		int selected = rand.nextInt(6);
+		while(!this.isLegal(selected)) {
+			selected = rand.nextInt(6);
+		} 
+		//this.addPiece(, player, false, true);
 	}
 	
 	public ArrayList<ArrayList<Integer>> getGrid() {
@@ -29,5 +37,9 @@ public class Connect4Controller {
 	
 	public void setModel(Connect4Model newModel) {
 		model = newModel;
+	}
+
+	public void addMessage(int column, int color) {
+		model.addPiece(column, color);
 	}
 }
