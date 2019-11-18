@@ -28,16 +28,16 @@ import javafx.stage.StageStyle;
 
 public class Connect4View extends Application implements Observer{
 	
-	boolean isClient = true;
-	boolean isTurn = false;
-	boolean isHuman = true;
-	GridPane window;
-	int currPlayer = 1;
-	Connect4Model model = new Connect4Model();
-	Connect4Controller controller = new Connect4Controller(model);
-	VBox border;
-	MenuBar bar;
-	Connect4DialogBox dialogBox;
+	private boolean isClient = true;
+	private boolean isTurn = false;
+	private boolean isHuman = true;
+	private GridPane window;
+	private int currPlayer = 1;
+	private Connect4Model model = new Connect4Model();
+	private Connect4Controller controller = new Connect4Controller(model);
+	private VBox border;
+	private MenuBar bar;
+	private Connect4DialogBox dialogBox;
 
 	private class Connect4DialogBox extends Stage {
 		private ToggleGroup createGroup;
@@ -251,7 +251,7 @@ public class Connect4View extends Application implements Observer{
 	}
 	
 	private void newGame() {
-		Connect4Model model = new Connect4Model();
+		model = new Connect4Model();
 		this.controller.setModel(model);
 		model.addObserver(this);
 		this.fillGrid(model.getGrid());
