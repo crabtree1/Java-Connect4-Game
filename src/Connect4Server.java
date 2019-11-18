@@ -7,8 +7,7 @@ import java.net.Socket;
 import javafx.application.Platform;
 
 public class Connect4Server {
-	private static ServerSocket server;
-	
+	private static ServerSocket server = null;
 	private static int port = 4000;
 	private static Socket socket;
 	private static Connect4MoveMessage myMessage;
@@ -29,11 +28,14 @@ public class Connect4Server {
 		}
 	}
 	
-	public static void startServer() throws IOException {
-		
+	public static void startServer() throws IOException {	
+		if(server != null) {
+			server.close();
+		}
 		server = new ServerSocket(port);
 		System.out.println("Server Open");
 	}
+	
 	
 	public static void setMessage(Connect4MoveMessage message) {
 		myMessage = message;
