@@ -33,7 +33,7 @@ public class Connect4Model extends Observable {
 				if(isClient) {
 				try {
 					Connect4Client.setMessage(message);
-					Connect4Client.callServer(this);
+					Connect4Client.callServer();
 				} catch (IOException | ClassNotFoundException e) {
 					e.printStackTrace();
 				}

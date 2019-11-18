@@ -277,6 +277,8 @@ public class Connect4View extends Application implements Observer{
 			}
 		} else {
 			try {
+				Connect4Client.setController(controller);
+				Connect4Client.setUpClient();
 				Connect4Client.getMessage(controller);
 			} catch (IOException e) {
 				e.printStackTrace();
@@ -295,9 +297,7 @@ public class Connect4View extends Application implements Observer{
 	public void update(Observable o, Object arg) {
 		ArrayList<ArrayList<Integer>> grid = (ArrayList<ArrayList<Integer>>) arg;
 		fillGrid(grid);
-		//isTurn = true;
-		//System.out.println(controller.getTurn());
-		System.out.print(Connect4Client.isListening());
+		//System.out.print(Connect4Client.isListening());
 	}
 
 	
