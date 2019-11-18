@@ -7,13 +7,40 @@ import java.net.Socket;
 import javafx.application.Platform;
 
 public class Connect4Client {
-	private static Connect4MoveMessage newMessage;
-
-	public static void callServer(Connect4MoveMessage message) throws IOException {
-		InetAddress host = InetAddress.getLocalHost();
-		Socket socket = new Socket(host.getHostName(), 4000);
-		ObjectOutputStream oos = new ObjectOutputStream(socket.getOutputStream());
-		System.out.println("Calling Server...");
-		oos.writeObject(message);
+	private static Connect4MoveMessage myMessage;
+	public static Connect4MoveMessage otherMessage;
+	
+	public static void callServer(Connect4Model model) throws IOException, ClassNotFoundException {
+		Thread serverThread = new Thread(new Runnable() {
+			@Override
+			public void run() {
+				try {
+					InetAddress host = InetAddress.getLocalHost();
+					Socket socket = new Socket(host.getHostName(), 4000);
+					ObjectInputStream ois = new ObjectInputStream(socket.getInputStream());
+					otherMessage = (Connect4MoveMessage) ois.readObject();
+					Platform.runLater(new Runnable() {
+						@Override
+						public void run() {
+							model.addPiece(otherMessage.getColumn(), otherMessage.getColor());
+						}
+					});
+					ObjectOutputStream oos = new ObjectOutputStream(socket.getOutputStream());
+					System.out.println("Calling Server...");
+					oos.writeObject(myMessage);
+					System.out.println(otherMessage.getColor());
+				} catch (IOException | ClassNotFoundException e) {
+				}
+			}
+		});
+		serverThread.start();
+	}
+	
+	public static void setMessage(Connect4MoveMessage message) {
+		myMessage = message;
+	}
+	
+	public static Connect4MoveMessage getOtherMessage() {
+		return otherMessage;
 	}
 }

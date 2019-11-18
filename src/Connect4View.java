@@ -33,15 +33,20 @@ import javafx.stage.StageStyle;
 
 public class Connect4View extends Application implements Observer{
 	
-	static boolean isClient = true;
+	boolean isClient = true;
+	boolean isTurn = false;
+	boolean isServerClient = false;
 	GridPane window;
 	int currPlayer = 1;
 	Connect4Model model = new Connect4Model();
 	Connect4Controller controller = new Connect4Controller(model);
 	VBox border;
 	MenuBar bar;
+	Connect4DialogBox dialogBox;
 
 	private class Connect4DialogBox extends Stage {
+		ToggleGroup createGroup;
+		
 		public Connect4DialogBox() {
 			DialogPane dPane = new DialogPane();
 			
@@ -53,7 +58,7 @@ public class Connect4View extends Application implements Observer{
 			dialog.initStyle(StageStyle.UTILITY);
 			dialog.setTitle("Network Setup");
 			
-			ToggleGroup createGroup = new ToggleGroup();
+			createGroup = new ToggleGroup();
 			
 			RadioButton serverRadio = new RadioButton("Server");
 			serverRadio.setSelected(true);
@@ -124,7 +129,7 @@ public class Connect4View extends Application implements Observer{
 		Menu file = new Menu("File");
 		MenuItem newGame = new MenuItem("New Game");
 		newGame.setOnAction((event) -> {
-			Connect4DialogBox dialogBox = new Connect4DialogBox();
+			dialogBox = new Connect4DialogBox();
 			this.newGame();
 		});
 		file.getItems().add(newGame);
@@ -205,11 +210,14 @@ public class Connect4View extends Application implements Observer{
 		}
 		
 		if (controller.isLegal(col)) {
-			controller.addPiece(col, currPlayer);
+			controller.addPiece(col, currPlayer, isClient);
 			
 			//check if game won
 			int winner = controller.hasWon();
 			if (winner != 0) {
+				if (!isTurn) {
+					window.setOnMouseClicked((event) -> {});
+				}
 				window.setOnMouseClicked((event) -> {});
 				Alert winAlert = new Alert(AlertType.INFORMATION);
 				winAlert.setHeaderText("Message");
@@ -218,12 +226,14 @@ public class Connect4View extends Application implements Observer{
 			}
 			
 			//Change current player
-			if (currPlayer == 1) {
-				currPlayer = 2;
-			}
-			else if (currPlayer == 2) {
-				currPlayer = 1;
-			}
+			if(!isServerClient) {
+				if (currPlayer == 1) {
+					currPlayer = 2;
+				}
+				else if (currPlayer == 2) {
+					currPlayer = 1;
+				}
+			} 
 		}
 		else {
 			Alert illegalMove = new Alert(AlertType.ERROR);
@@ -234,26 +244,26 @@ public class Connect4View extends Application implements Observer{
 	}
 	
 	private void newGame() {
-		isClient = false;
 		Connect4Model newModel = new Connect4Model();
 		this.controller.setModel(newModel);
 		newModel.addObserver(this);
+		this.fillGrid(model.getGrid());
 		update(model, controller.getGrid());
-		if(isClient == false) {
+		isServerClient = true;
+		if(this.dialogBox.createGroup.getSelectedToggle().toString().contains("Server")) {
+			isClient = false;
+			isTurn = true;
+			currPlayer = 1;
 			try {
 				Connect4Server.startServer();
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
-			while(true) {
-				try {
-					Connect4Server.getMessage(controller);
-				} catch (ClassNotFoundException | IOException e) {
-					e.printStackTrace();
-				}
-			}
-			}
+		} else {
+			isClient = true;
+			currPlayer = 2;
 		}
+	}
 
 	@Override
 	public void update(Observable o, Object arg) {

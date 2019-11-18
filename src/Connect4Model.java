@@ -21,21 +21,35 @@ public class Connect4Model extends Observable {
 		return grid;
 	}
 	
+	public void addPiece(int place, int player, boolean isClient) {
+		for(int i=5; i>=0; i--) {
+			if(grid.get(i).get(place) == 0) {
+				Connect4MoveMessage message = new Connect4MoveMessage(i, place, player);
+				if(isClient) {
+				try {
+					Connect4Client.setMessage(message);
+					Connect4Client.callServer(this);
+				} catch (IOException | ClassNotFoundException e) {
+					e.printStackTrace();
+				}
+				} else if (!isClient) {
+					Connect4Server.setMessage(message);
+					try {
+						Connect4Server.getMessage(this);
+					} catch (ClassNotFoundException | IOException e) {
+						e.printStackTrace();
+					}
+				}
+				
+				break;
+			}
+		}
+	}
+	
 	public void addPiece(int place, int player) {
 		for(int i=5; i>=0; i--) {
 			if(grid.get(i).get(place) == 0) {
 				grid.get(i).set(place, player);
-				
-				Connect4MoveMessage message = new Connect4MoveMessage(i, place, player);
-				if(Connect4View.isClient) {
-				try {
-					Connect4Client.callServer(message);
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-				}
-				
 				break;
 			}
 		}
