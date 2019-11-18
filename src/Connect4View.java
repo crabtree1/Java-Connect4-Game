@@ -225,16 +225,6 @@ public class Connect4View extends Application implements Observer{
 				winAlert.setContentText("You won!");
 				winAlert.showAndWait();
 			}
-			
-			//Change current player
-			if(!isServerClient) {
-				if (currPlayer == 1) {
-					currPlayer = 2;
-				}
-				else if (currPlayer == 2) {
-					currPlayer = 1;
-				}
-			} 
 		}
 		else {
 			Alert illegalMove = new Alert(AlertType.ERROR);

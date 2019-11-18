@@ -16,6 +16,12 @@ public class Connect4Client {
 			@Override
 			public void run() {
 				try {
+					Platform.runLater(new Runnable() {
+						@Override
+						public void run() {
+							model.addPiece(myMessage.getColumn(), myMessage.getColor());
+						}
+					});
 					InetAddress host = InetAddress.getLocalHost();
 					Socket socket = new Socket(host.getHostName(), port);
 					ObjectInputStream ois = new ObjectInputStream(socket.getInputStream());
