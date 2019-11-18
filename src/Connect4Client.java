@@ -12,6 +12,7 @@ public class Connect4Client {
 	public static Connect4MoveMessage otherMessage;
 	private static int port = 4000;
 	private static Socket socket;
+	private static boolean isListening = false;
 	
 	public static void callServer(Connect4Model model) throws IOException, ClassNotFoundException {
 		Thread clientThread = new Thread(new Runnable() {
@@ -19,9 +20,7 @@ public class Connect4Client {
 			public void run() {
 				try {
 					ObjectOutputStream oos = new ObjectOutputStream(socket.getOutputStream());
-					System.out.println("Calling Server...");
 					oos.writeObject(myMessage);
-					System.out.println(otherMessage.getColor());
 					socket.close();
 				} catch (IOException e) {
 				}
@@ -37,6 +36,7 @@ public class Connect4Client {
 			@Override
 			public void run() {
 				try {
+					isListening = true;
 					ObjectInputStream ois = new ObjectInputStream(socket.getInputStream());
 					otherMessage = (Connect4MoveMessage) ois.readObject();
 					Platform.runLater(new Runnable() {
@@ -45,9 +45,10 @@ public class Connect4Client {
 							controller.addMessage(otherMessage.getColumn(), otherMessage.getColor());
 						}
 					});
-					
+					isListening = false;
 				} catch (IOException | ClassNotFoundException e) {
 				}
+				controller.setTurn(true);
 			}
 		});
 		clientListenerThread.start();
@@ -64,5 +65,9 @@ public class Connect4Client {
 	
 	public static void setPort(int newPort) {
 		port = newPort;
+	}
+	
+	public static boolean isListening() {
+		return isListening;
 	}
 }

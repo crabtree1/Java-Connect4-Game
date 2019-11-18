@@ -40,7 +40,7 @@ public class Connect4Model extends Observable {
 				} else if (!isClient) {
 					Connect4Server.setMessage(message);
 					try {
-						Connect4Server.getMessage(this);
+						Connect4Server.getMessage();
 					} catch (ClassNotFoundException | IOException e) {
 						e.printStackTrace();
 					}

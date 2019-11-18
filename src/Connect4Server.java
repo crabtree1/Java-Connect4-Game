@@ -12,6 +12,7 @@ public class Connect4Server {
 	private static Socket socket;
 	private static Connect4MoveMessage myMessage;
 	private static Connect4MoveMessage otherMessage;
+	private static Connect4Controller controller;
 	
 	public static void main(String[] args) throws IOException, ClassNotFoundException {
 		server = new ServerSocket(port);
@@ -41,6 +42,10 @@ public class Connect4Server {
 		myMessage = message;
 	}
 	
+	public static void setController(Connect4Controller newController) {
+		controller = newController;
+	}
+	
 	public static Connect4MoveMessage getOtherMessage() {
 		return otherMessage;
 	}
@@ -49,7 +54,7 @@ public class Connect4Server {
 		port = newPort;
 	}
 		
-	public static void getMessage (Connect4Model model) throws IOException, 
+	public static void getMessage () throws IOException, 
 	ClassNotFoundException {
 		Thread serverThread = new Thread(new Runnable() {
 			@Override
@@ -67,13 +72,14 @@ public class Connect4Server {
 					Platform.runLater(new Runnable() {
 						@Override
 						public void run() {
-							model.addPiece(otherMessage.getColumn(), otherMessage.getColor());
+							controller.addPiece(otherMessage.getColumn(), otherMessage.getColor());
 						}
 					});
 					socket.close();
 				} catch (IOException | ClassNotFoundException e) {
 					e.printStackTrace();
 				}
+				controller.setTurn(true);
 			}
 			
 		});

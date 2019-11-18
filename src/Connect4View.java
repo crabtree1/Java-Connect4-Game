@@ -29,7 +29,6 @@ import javafx.stage.StageStyle;
 public class Connect4View extends Application implements Observer{
 	
 	private boolean isClient = true;
-	private boolean isTurn = false;
 	private boolean isHuman = true;
 	private GridPane window;
 	private int currPlayer = 1;
@@ -66,7 +65,7 @@ public class Connect4View extends Application implements Observer{
 			clientRadio.setMinWidth(70);
 			clientRadio.setToggleGroup(createGroup);
 			
-			ToggleGroup playAsGroup = new ToggleGroup();
+			playAsGroup = new ToggleGroup();
 			
 			RadioButton humanRadio = new RadioButton("Human");
 			humanRadio.setSelected(true);
@@ -118,7 +117,7 @@ public class Connect4View extends Application implements Observer{
 		}
 		
 		public boolean playAs() {
-			if(this.playAsGroup.getSelectedToggle().toString().contains("human")) {
+			if(this.playAsGroup.getSelectedToggle().toString().contains("Human")) {
 				return true;
 			}
 			return false;
@@ -226,11 +225,11 @@ public class Connect4View extends Application implements Observer{
 		}
 		if (!isHuman) {
 			window.setOnMouseClicked((event) -> {});
-		} else if(!isTurn) {
+		} else if(!controller.getTurn()) {
 			window.setOnMouseClicked((event) -> {});
-		} else if (controller.isLegal(col) && isTurn) {
+		} else if (controller.isLegal(col) && controller.getTurn()) {
 			controller.addPiece(col, currPlayer, isClient);
-			isTurn = false;
+			controller.setTurn(false);
 			
 			//check if game won
 			int winner = controller.hasWon();
@@ -250,20 +249,29 @@ public class Connect4View extends Application implements Observer{
 		}
 	}
 	
+	public void showWon() {
+		Alert winAlert = new Alert(AlertType.INFORMATION);
+		winAlert.setHeaderText("Message");
+		winAlert.setContentText("You won!");
+		winAlert.showAndWait();
+	}
+	
 	private void newGame() {
 		model = new Connect4Model();
 		this.controller.setModel(model);
+		this.controller.addView(this);
 		model.addObserver(this);
 		this.fillGrid(model.getGrid());
 		//update(model, controller.getGrid());
 		Connect4Server.setPort(this.dialogBox.getPort());
 		Connect4Client.setPort(this.dialogBox.getPort());
 		if(!this.dialogBox.createType()) {
+			controller.setTurn(true);
 			isClient = false;
-			isTurn = true;
 			currPlayer = 1;
 			try {
 				Connect4Server.startServer();
+				Connect4Server.setController(controller);
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
@@ -276,15 +284,28 @@ public class Connect4View extends Application implements Observer{
 			isClient = true;
 			currPlayer = 2;
 		}
+		isHuman = this.dialogBox.playAs();
 		model.setPlayer(currPlayer);
+		controller.updateClientStat(isClient);
+		controller.setPlayAs(isHuman);
+		//controller.startGame();
 	}
 
 	@Override
 	public void update(Observable o, Object arg) {
 		ArrayList<ArrayList<Integer>> grid = (ArrayList<ArrayList<Integer>>) arg;
 		fillGrid(grid);
-		isTurn = true;
-		System.out.println(isTurn);
+		//isTurn = true;
+		//System.out.println(controller.getTurn());
+		System.out.print(Connect4Client.isListening());
+		if(controller.getClientStat() && !Connect4Client.isListening()) {
+			//System.out.print("Here");
+			try {
+				Connect4Client.getMessage(controller);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
 	}
 
 	
