@@ -211,7 +211,7 @@ public class Connect4View extends Application implements Observer{
 		}
 		
 		if (controller.isLegal(col)) {
-			controller.addPiece(col, currPlayer, isClient);
+			controller.addPiece(col, currPlayer, isClient, isServerClient);
 			
 			//check if game won
 			int winner = controller.hasWon();

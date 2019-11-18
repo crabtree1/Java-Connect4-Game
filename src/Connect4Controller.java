@@ -8,8 +8,10 @@ public class Connect4Controller {
 		this.model = model;
 	}
 	
-	public void addPiece(int place, int player, boolean isClient) {
-		model.addPiece(place, player, isClient);
+	public void addPiece(int place, int player, boolean isClient, boolean isClientServer) {
+		if(isClientServer) {
+			model.addPiece(place, player, isClient);
+		}
 		model.addPiece(place, player);
 	}
 	
