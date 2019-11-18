@@ -4,23 +4,18 @@ import java.util.Observable;
 import java.util.Observer;
 
 import javafx.application.Application;
-import javafx.application.Platform;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.ButtonType;
-import javafx.scene.control.Dialog;
 import javafx.scene.control.DialogPane;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.RadioButton;
 import javafx.scene.control.TextField;
-import javafx.scene.control.TextInputDialog;
 import javafx.scene.control.ToggleGroup;
-import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
@@ -46,6 +41,7 @@ public class Connect4View extends Application implements Observer{
 
 	private class Connect4DialogBox extends Stage {
 		ToggleGroup createGroup;
+		TextField portField;
 		
 		public Connect4DialogBox() {
 			DialogPane dPane = new DialogPane();
@@ -88,7 +84,8 @@ public class Connect4View extends Application implements Observer{
 			TextField serverField = new TextField("localhost");
 			serverField.setMinWidth(90);
 			
-			TextField portField = new TextField("4000");
+			portField = new TextField("4000");
+			portField.setText("4000");
 			portField.setMinWidth(90);
 			
 			HBox createBox = new HBox(10);
@@ -113,6 +110,10 @@ public class Connect4View extends Application implements Observer{
 			dialog.getButtonTypes().addAll(ok, cancel);
 			
 			dialog.showAndWait();
+		}
+		
+		public int getPort() {
+			return  Integer.parseInt(portField.getText());
 		}
 	}
 
@@ -249,6 +250,8 @@ public class Connect4View extends Application implements Observer{
 		newModel.addObserver(this);
 		this.fillGrid(model.getGrid());
 		update(model, controller.getGrid());
+		Connect4Server.setPort(this.dialogBox.getPort());
+		Connect4Client.setPort(this.dialogBox.getPort());
 		isServerClient = true;
 		if(this.dialogBox.createGroup.getSelectedToggle().toString().contains("Server")) {
 			isClient = false;

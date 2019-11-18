@@ -42,6 +42,10 @@ public class Connect4Server {
 	public static Connect4MoveMessage getOtherMessage() {
 		return otherMessage;
 	}
+	
+	public static void setPort(int newPort) {
+		port = newPort;
+	}
 		
 	public static void getMessage (Connect4Model model) throws IOException, 
 	ClassNotFoundException {
