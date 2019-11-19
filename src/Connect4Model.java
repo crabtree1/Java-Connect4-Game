@@ -1,4 +1,3 @@
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Observable;
 
@@ -26,32 +25,29 @@ public class Connect4Model extends Observable {
 		return grid;
 	}
 	
-	public void addPiece(int place, int player, boolean isClient) {
+	public Connect4MoveMessage getMessage(int place) {
+		Connect4MoveMessage message = null;
 		for(int i=5; i>=0; i--) {
 			if(grid.get(i).get(place) == 0) {
-				Connect4MoveMessage message = new Connect4MoveMessage(i, place, player);
-				if(isClient) {
-				try {
-					Connect4Client.setMessage(message);
-					Connect4Client.callServer();
-				} catch (IOException | ClassNotFoundException e) {
-					e.printStackTrace();
-				}
-				} else if (!isClient) {
-					Connect4Server.setMessage(message);
-					try {
-						Connect4Server.getMessage();
-					} catch (ClassNotFoundException | IOException e) {
-						e.printStackTrace();
-					}
-				}
-				
+				message = new Connect4MoveMessage(i, place, this.player);
 				break;
 			}
 		}
+		return message;
 	}
 	
 	public void addPiece(int place, int player) {
+		for(int i=5; i>=0; i--) {
+			if(grid.get(i).get(place) == 0) {
+				grid.get(i).set(place, player);
+				break;
+			}
+		}
+		setChanged();
+		notifyObservers(grid);
+	}
+	
+	public void addPiece(int place) {
 		for(int i=5; i>=0; i--) {
 			if(grid.get(i).get(place) == 0) {
 				grid.get(i).set(place, player);
@@ -131,4 +127,5 @@ public class Connect4Model extends Observable {
 		return toPrint;
 		
 	}
+
 }

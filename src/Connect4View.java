@@ -1,4 +1,7 @@
 import java.io.IOException;
+import java.net.InetAddress;
+import java.net.ServerSocket;
+import java.net.Socket;
 import java.util.ArrayList;
 import java.util.Observable;
 import java.util.Observer;
@@ -28,10 +31,7 @@ import javafx.stage.StageStyle;
 
 public class Connect4View extends Application implements Observer{
 	
-	private boolean isClient = true;
-	private boolean isHuman = true;
 	private GridPane window;
-	private int currPlayer = 1;
 	private Connect4Model model = new Connect4Model();
 	private Connect4Controller controller = new Connect4Controller(model);
 	private VBox border;
@@ -193,44 +193,35 @@ public class Connect4View extends Application implements Observer{
 	
 	
 	public void mouseClick(double x) {
-		
 		int col;
-		
 		if (x < 52) {
 			col = 0;
 		}
-		
 		else if (x >= 52 && x < 100) {
 			col = 1;
 		}
-		
 		else if(x >= 100 && x < 148) {
 			col = 2;
 		}
-		
 		else if(x >= 148 && x < 196) {
 			col = 3;
 		}
-		
 		else if(x >= 196 && x < 244) {
 			col = 4;
 		}
-		
 		else if(x >= 244 && x < 292) {
 			col = 5;
 		}
-		
 		else {
 			col = 6;
 		}
-		if (!isHuman) {
+		if (!controller.isHuman()) {
 			window.setOnMouseClicked((event) -> {});
 		} else if(!controller.getTurn()) {
 			window.setOnMouseClicked((event) -> {});
-		} else if (controller.isLegal(col) && controller.getTurn()) {
-			controller.addPiece(col, currPlayer, isClient);
+		} else if (controller.isLegal(col)) {
+			controller.humanTurn(col);
 			controller.setTurn(false);
-			
 			//check if game won
 			int winner = controller.hasWon();
 			if (winner != 0) {
@@ -256,48 +247,53 @@ public class Connect4View extends Application implements Observer{
 		winAlert.showAndWait();
 	}
 	
+	public void showLost() {
+		Alert winAlert = new Alert(AlertType.INFORMATION);
+		winAlert.setHeaderText("Message");
+		winAlert.setContentText("You lost!");
+		winAlert.showAndWait();
+	}
+	
 	private void newGame() {
 		model = new Connect4Model();
 		this.controller.setModel(model);
 		this.controller.addView(this);
 		model.addObserver(this);
 		this.fillGrid(model.getGrid());
-		//update(model, controller.getGrid());
-		Connect4Server.setPort(this.dialogBox.getPort());
-		Connect4Client.setPort(this.dialogBox.getPort());
+		Socket socket = null;
+		int currPlayer = 1;
 		if(!this.dialogBox.createType()) {
-			controller.setTurn(true);
-			isClient = false;
-			currPlayer = 1;
 			try {
-				Connect4Server.startServer();
-				Connect4Server.setController(controller);
+				controller.setTurn(true);
+				ServerSocket server = new ServerSocket(this.dialogBox.getPort());
+				socket = server.accept();
+				server.close();
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
 		} else {
+			currPlayer = 2;
 			try {
-				Connect4Client.setController(controller);
-				Connect4Client.setUpClient();
-				Connect4Client.getMessage(controller);
+				InetAddress host = InetAddress.getLocalHost();
+				socket = new Socket(host.getHostName(), this.dialogBox.getPort());
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
-			isClient = true;
-			currPlayer = 2;
 		}
-		isHuman = this.dialogBox.playAs();
 		model.setPlayer(currPlayer);
-		controller.updateClientStat(isClient);
-		controller.setPlayAs(isHuman);
-		//controller.startGame();
+		controller.setPlayAs(this.dialogBox.playAs());
+		controller.initStreams(socket);
+		if(this.dialogBox.createType()) {
+			this.controller.startTurn();
+		} else if(!this.dialogBox.playAs() && !this.dialogBox.createType()) {
+			this.controller.computerTurn();
+		}
 	}
 
 	@Override
 	public void update(Observable o, Object arg) {
 		ArrayList<ArrayList<Integer>> grid = (ArrayList<ArrayList<Integer>>) arg;
 		fillGrid(grid);
-		//System.out.print(Connect4Client.isListening());
 	}
 
 	
