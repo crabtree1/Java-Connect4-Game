@@ -29,20 +29,57 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 
+/**
+ * This class is the view in the MVC architecture for a connect 4 game. This class holds all the methods
+ * to create a GUI for the user to view and interact with. The color of the pieces is as follows:
+ * Player 1 = red
+ * Player 2 = yellow
+ * Player 1 will be the server and player 2 will be the client
+ * 
+ * 
+ * @author Christopher Crabtree
+ * @author Luke Cernetic
+ * @version 1.0
+ *
+ */
 public class Connect4View extends Application implements Observer{
-	
-	private GridPane window;
-	private Connect4Model model = new Connect4Model();
-	private Connect4Controller controller = new Connect4Controller(model);
-	private VBox border;
-	private MenuBar bar;
-	private Connect4DialogBox dialogBox;
 
+	/**
+	 * This is a private inner class for the Connect4View class. This class creates and 
+	 * holds the data for the user to select how the game will be played and by who (human/ computer)
+	 * 
+	 * 
+	 * @author Christopher Crabtree
+	 * @author Luke Cernetic
+	 * @version 1.0
+	 *
+	 */
 	private class Connect4DialogBox extends Stage {
+		
+		/**
+		 * Holds the data to select if it is a server or client
+		 */
 		private ToggleGroup createGroup;
+		
+		/**
+		 * Holds the port selected by the user; default 4000
+		 */
 		private TextField portField;
+		
+		/**
+		 * Holds the data to select if the game is played by a human or computer
+		 */
 		private ToggleGroup playAsGroup;
 		
+		/**
+		 * Holds the address of the server; default localhost
+		 */
+		private TextField serverField;
+		
+		/**
+		 * This is the constructor of the dialog box used by the user to select options about the
+		 * game will be run. It creates the box and the shows it to the user when the user clicks new game
+		 */
 		public Connect4DialogBox() {
 			DialogPane dPane = new DialogPane();
 			
@@ -81,10 +118,13 @@ public class Connect4View extends Application implements Observer{
 			Text serverText = new Text("   Server");
 			Text portText = new Text("Port");
 			
-			TextField serverField = new TextField("localhost");
+			serverField = new TextField("localhost");
+			// default address = localhost
+			serverField.setText("localhost");
 			serverField.setMinWidth(90);
 			
 			portField = new TextField("4000");
+			// default port = 4000
 			portField.setText("4000");
 			portField.setMinWidth(90);
 			
@@ -112,10 +152,31 @@ public class Connect4View extends Application implements Observer{
 			dialog.showAndWait();
 		}
 		
+		/**
+		 * This method returns the port selected by the use. Default of 4000
+		 * 
+		 * @return An int representing the port to run the game on
+		 */
 		public int getPort() {
 			return  Integer.parseInt(portField.getText());
 		}
 		
+		/**
+		 * This method returns the address of the server. default of localhost
+		 * 
+		 * @return A string of the address of the server
+		 */
+		public String getAddress() {
+			return serverField.getText();
+			
+		}
+		
+		/**
+		 * This method returns a boolean indicating if the game is run by human or computer.
+		 * true = human, false = computer
+		 * 
+		 * @return A boolean indicating how the game will be run (computer or human)
+		 */
 		public boolean playAs() {
 			if(this.playAsGroup.getSelectedToggle().toString().contains("Human")) {
 				return true;
@@ -123,6 +184,12 @@ public class Connect4View extends Application implements Observer{
 			return false;
 		}
 		
+		/**
+		 * This method returns a boolean indicating if the current instance is a server
+		 * or a client
+		 * 
+		 * @return A boolean indicating if the instance is a server or client
+		 */
 		public boolean createType() {
 			if(this.createGroup.getSelectedToggle().toString().contains("Server")) {
 				return false;
@@ -131,32 +198,69 @@ public class Connect4View extends Application implements Observer{
 		}
 	}
 
+	/**
+	 * A gridPane used to hold all the circles
+	 */
+	private GridPane window;
+	
+	/**
+	 * Reference to the controller
+	 */
+	private Connect4Controller controller;
+	
+	/**
+	 * VBox used to hold the menu
+	 */
+	private VBox border;
+	
+	/**
+	 * Holds the newGame option in the bar
+	 */
+	private MenuBar bar;
+	
+	/**
+	 * Pop up box used to get data from the user when they select a new game
+	 */
+	private Connect4DialogBox dialogBox;
 
-	@Override
+	/**
+	 * This is the method that starts the stage design, sets the params of the stage and shows it as
+	 * a GUI to the user
+	 * 
+	 * @param stage: A Stage object where we put all the GUI elements 
+	 * 
+	 * @Override
+	 */
 	public void start(Stage stage) {
+		Connect4Model model = new Connect4Model();
+		controller = new Connect4Controller(model);
 		model.addObserver(this);
 		stage.setTitle("Connect 4");
-		
 		border = new VBox();
-		
 		//Sets up MenuBar
 		bar = new MenuBar();
 		Menu file = new Menu("File");
 		MenuItem newGame = new MenuItem("New Game");
+		// sets the actions for a new game
 		newGame.setOnAction((event) -> {
 			dialogBox = new Connect4DialogBox();
 			this.newGame();
 		});
+		
 		file.getItems().add(newGame);
 		bar.getMenus().add(file);
-		
 		fillGrid(controller.getGrid());
-		
 		Scene scene = new Scene(border, 344, 321);
 		stage.setScene(scene);
 		stage.show();
 	}
 	
+	/**
+	 * This method fills the grid with 0s, which will print out to white spaces
+	 * 
+	 * @param grid: An Array of Arrays of Integers that represent the state of the game
+	 * 
+	 */
 	private void fillGrid(ArrayList<ArrayList<Integer>> grid) {
 		//set gridPane and values
 		window = new GridPane();
@@ -179,6 +283,12 @@ public class Connect4View extends Application implements Observer{
 		border.getChildren().addAll(bar, window);
 	}
 	
+	/**
+	 * This method returns the color of an int
+	 * 
+	 * @param player: An int representing a color
+	 * @return A Color of that int
+	 */
 	private Color getPlayerColor(int player) {
 		if (player == 1) {
 			return Color.RED;
@@ -255,7 +365,7 @@ public class Connect4View extends Application implements Observer{
 	}
 	
 	private void newGame() {
-		model = new Connect4Model();
+		Connect4Model model = new Connect4Model();
 		this.controller.setModel(model);
 		this.controller.addView(this);
 		model.addObserver(this);
@@ -264,18 +374,17 @@ public class Connect4View extends Application implements Observer{
 		int currPlayer = 1;
 		if(!this.dialogBox.createType()) {
 			try {
-				controller.setTurn(true);
 				ServerSocket server = new ServerSocket(this.dialogBox.getPort());
 				socket = server.accept();
 				server.close();
+				controller.setTurn(true);
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
 		} else {
 			currPlayer = 2;
 			try {
-				InetAddress host = InetAddress.getLocalHost();
-				socket = new Socket(host.getHostName(), this.dialogBox.getPort());
+				socket = new Socket(this.dialogBox.getAddress(), this.dialogBox.getPort());
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
