@@ -301,7 +301,14 @@ public class Connect4View extends Application implements Observer{
 		}
 	}
 	
-	
+	/**
+	 * Sets column that was clicked based on mouse value and then performs that
+	 * move. Also turns off other clicking and displays winning alerts if the
+	 * player had won with that click.
+	 * 
+	 * @param x the mouse's x location
+	 * 
+	 */
 	private void mouseClick(double x) {
 		int col;
 		if (x < 52) {
@@ -350,6 +357,9 @@ public class Connect4View extends Application implements Observer{
 		}
 	}
 	
+	/**
+	 * Displays the "You won!" alert.
+	 */
 	public void showWon() {
 		Alert winAlert = new Alert(AlertType.INFORMATION);
 		winAlert.setHeaderText("Message");
@@ -357,6 +367,9 @@ public class Connect4View extends Application implements Observer{
 		winAlert.showAndWait();
 	}
 	
+	/**
+	 * Displays the "You lost!" alert.
+	 */
 	public void showLost() {
 		Alert winAlert = new Alert(AlertType.INFORMATION);
 		winAlert.setHeaderText("Message");
@@ -364,6 +377,9 @@ public class Connect4View extends Application implements Observer{
 		winAlert.showAndWait();
 	}
 	
+	/**
+	 * Creates a new game by reseting the model, controller, and server.
+	 */
 	private void newGame() {
 		Connect4Model model = new Connect4Model();
 		this.controller.setModel(model);
@@ -399,7 +415,11 @@ public class Connect4View extends Application implements Observer{
 		}
 	}
 
-	@Override
+	/**
+	 * Updates the GUI according to the newly updated model.
+	 * 
+	 * 	@Override
+	 */
 	public void update(Observable o, Object arg) {
 		ArrayList<ArrayList<Integer>> grid = (ArrayList<ArrayList<Integer>>) arg;
 		fillGrid(grid);
