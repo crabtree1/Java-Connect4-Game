@@ -204,20 +204,6 @@ public class Connect4Tests {
 	}
 	
 	@Test
-	void controllerInitStreams() {
-		Socket socket = null;
-		try {
-			InetAddress addr = InetAddress.getLocalHost();
-			socket = new Socket(addr, 4000);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		Connect4Model model = new Connect4Model();
-		Connect4Controller controller = new Connect4Controller(model);
-		controller.initStreams(socket);
-	}
-	
-	@Test
 	void controllerStartTurn() {
 		Connect4Model model = new Connect4Model();
 		Connect4Controller controller = new Connect4Controller(model);
