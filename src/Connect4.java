@@ -16,7 +16,6 @@ import javafx.application.Application;
  * @author Luke Cernetic
  *
  */
-
 public class Connect4  {
 	
 	public static void main(String[] args) {
