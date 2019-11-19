@@ -1,6 +1,10 @@
 import static org.junit.jupiter.api.Assertions.*;
 
+import java.io.IOException;
+import java.net.InetAddress;
+import java.net.ServerSocket;
 import java.net.Socket;
+import java.net.UnknownHostException;
 import java.util.ArrayList;
 
 import org.junit.jupiter.api.Test;
@@ -197,5 +201,30 @@ public class Connect4Tests {
 		controller.isHuman();
 		controller.addPiece(1, 1);
 		assertTrue(controller.isHuman());
+	}
+	
+	@Test
+	void controllerInitStreams() {
+		Socket socket = null;
+		try {
+			InetAddress addr = InetAddress.getLocalHost();
+			socket = new Socket(addr, 4000);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		Connect4Model model = new Connect4Model();
+		Connect4Controller controller = new Connect4Controller(model);
+		controller.initStreams(socket);
+	}
+	
+	@Test
+	void controllerStartTurn() {
+		Connect4Model model = new Connect4Model();
+		Connect4Controller controller = new Connect4Controller(model);
+		controller.startTurn();
+	}
+	
+	@Test
+	void controllerHumanTurn() {
 	}
 }

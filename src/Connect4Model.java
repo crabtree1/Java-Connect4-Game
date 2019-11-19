@@ -67,14 +67,7 @@ public class Connect4Model extends Observable {
 	 * @return a Connect4MoveMessage with the data of the current input
 	 */
 	public Connect4MoveMessage getMessage(int place) {
-		Connect4MoveMessage message = null;
-		for(int i=5; i>=0; i--) {
-			if(grid.get(i).get(place) == 0) {
-				message = new Connect4MoveMessage(i, place, this.player);
-				break;
-			}
-		}
-		return message;
+		return new Connect4MoveMessage(0, place, this.player);
 	}
 	
 	/**

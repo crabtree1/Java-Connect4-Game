@@ -83,7 +83,6 @@ public class Connect4Controller {
 			this.oos = new ObjectOutputStream(socket.getOutputStream());
 			this.ois = new ObjectInputStream(socket.getInputStream());
 		} catch (IOException e) {
-			e.printStackTrace();
 		}
 	}
 	
