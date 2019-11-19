@@ -93,7 +93,7 @@ public class Connect4Controller {
 	 * We use a new thread because this is a blocking call, and it would cause the GUI to freeze. We also use
 	 * Platfrom.runLater() to send GUI update commands to the GUI, which is the data from the opponents turn.
 	 * 
-	 * @see javafx.application.Platform.runLater()
+	 * 
 	 */
 	public void startTurn() {
 		// creates a new thread to run ois.readObject()

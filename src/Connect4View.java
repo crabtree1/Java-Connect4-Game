@@ -229,7 +229,6 @@ public class Connect4View extends Application implements Observer{
 	 * 
 	 * @param stage: A Stage object where we put all the GUI elements 
 	 * 
-	 * @Override
 	 */
 	public void start(Stage stage) {
 		Connect4Model model = new Connect4Model();
@@ -418,7 +417,6 @@ public class Connect4View extends Application implements Observer{
 	/**
 	 * Updates the GUI according to the newly updated model.
 	 * 
-	 * 	@Override
 	 */
 	public void update(Observable o, Object arg) {
 		ArrayList<ArrayList<Integer>> grid = (ArrayList<ArrayList<Integer>>) arg;

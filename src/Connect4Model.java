@@ -184,7 +184,6 @@ public class Connect4Model extends Observable {
 	/**
 	 * This method prints the current game state to the console
 	 * 
-	 * @Override
 	 */
 	public String toString() {
 		String toPrint = "-------------------------\n";

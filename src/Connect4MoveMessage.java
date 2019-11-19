@@ -26,9 +26,9 @@ public class Connect4MoveMessage implements Serializable {
         * Constructor for the Connect4MoveMessage. Simply sets its own row, col,
         * and color values to the values given as parameters. 
         * 
-        * @param row
-        * @param col
-        * @param color
+        * @param row: An int row
+        * @param col: An int col
+        * @param color: An int color
         */
        public Connect4MoveMessage(int row, int col, int color) {
     	   this.row = row;
