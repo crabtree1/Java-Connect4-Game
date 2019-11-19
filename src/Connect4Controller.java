@@ -111,10 +111,6 @@ public class Connect4Controller {
 	public boolean getTurn() {
 		return this.isTurn;
 	}
-
-	public void addMessage(int column, int color) {
-		model.addPiece(column, color);
-	}
 	
 	public void addView(Connect4View view) {
 		this.view = view;
@@ -127,7 +123,6 @@ public class Connect4Controller {
 	public void addPiece(int column, int color) {
 		model.addPiece(column, color);
 	}
-	
 	
 	public boolean isHuman() {
 		return this.isHuman;

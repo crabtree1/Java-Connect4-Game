@@ -157,7 +157,7 @@ public class Connect4View extends Application implements Observer{
 		stage.show();
 	}
 	
-	public void fillGrid(ArrayList<ArrayList<Integer>> grid) {
+	private void fillGrid(ArrayList<ArrayList<Integer>> grid) {
 		//set gridPane and values
 		window = new GridPane();
 		window.setStyle("-fx-background-color:#0000ff");
@@ -179,7 +179,7 @@ public class Connect4View extends Application implements Observer{
 		border.getChildren().addAll(bar, window);
 	}
 	
-	public Color getPlayerColor(int player) {
+	private Color getPlayerColor(int player) {
 		if (player == 1) {
 			return Color.RED;
 		}
@@ -192,7 +192,7 @@ public class Connect4View extends Application implements Observer{
 	}
 	
 	
-	public void mouseClick(double x) {
+	private void mouseClick(double x) {
 		int col;
 		if (x < 52) {
 			col = 0;
